@@ -19,10 +19,10 @@ namespace Book_app.Controllers
             _booksService = booksService;
         }
 
-        [HttpPost("add-book")]
-        public IActionResult PostBookDetails([FromBody]BookRequest book)
+        [HttpPost("add-book -with-authors")]
+        public IActionResult PostBookDetails([FromBody]BookVM book)
         {
-            _booksService.AddBook(book);
+            _booksService.AddBookWithAuthors(book);
           
             return Ok();
         }
@@ -36,10 +36,11 @@ namespace Book_app.Controllers
         public IActionResult GetBookbyId(int id)
         {
             var book = _booksService.GetBookById(id);
+
             return Ok(book);
         }
         [HttpPut("update-book-by-Id/{id}")]
-        public IActionResult UpdateBookById(int id, [FromBody]BookRequest book)
+        public IActionResult UpdateBookById(int id, [FromBody]BookVM book)
         {
             var updatedBook= _booksService.UpdateBookById(id, book);
             return Ok(updatedBook);
@@ -48,8 +49,15 @@ namespace Book_app.Controllers
         [HttpDelete("delete-book-by-Id/{id}")]
         public IActionResult DeleteBookById(int id)
         {
-            _booksService.DeleteBookById(id);
-            return Ok();
+            try {
+                _booksService.DeleteBookById(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
         }
 
     }
